@@ -13,24 +13,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.orange),
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'Habit Tracker App'),
     );
   }
 }
@@ -57,7 +42,7 @@ class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 0;
   static const TextStyle optionStyle = TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   static const List<Widget> _widgetOptions = <Widget>[
-    Text('Index 0: Dashboard', style: optionStyle),
+    DashboardPage(),
     Placeholder(),
   ];
 
@@ -70,7 +55,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('BottomNavigationBar Sample')),
+      appBar: AppBar(title: const Text('Dashboard')),
       body: Center(child: _widgetOptions.elementAt(_selectedIndex)),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
@@ -84,3 +69,106 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
+
+class DashboardPage extends StatefulWidget {
+  const DashboardPage({
+    super.key,
+  });
+
+  @override
+  State<DashboardPage> createState() => _DashboardPageState();
+}
+
+class _DashboardPageState extends State<DashboardPage> {
+  var habitsList = <String>[];
+
+  void _showInputDialog() {
+    TextEditingController textController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Enter Text"),
+          content: TextField(
+            controller: textController,
+            decoration: InputDecoration(hintText: "Type something..."),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close input dialog
+              },
+              child: Text("Cancel"),
+            ),
+            TextButton(
+              onPressed: () {
+                String userInput = textController.text.trim(); // Trim input
+
+                if (userInput.isEmpty) return; // Ignore empty input
+
+                if (habitsList.contains(userInput)) {
+                  Navigator.of(context).pop(); // Close input dialog first
+
+                  // Show duplicate habit warning
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: Text("Duplicate Habit"),
+                        content: Text("This habit already exists!"),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop(); // Close warning
+                            },
+                            child: Text("OK"),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                } else {
+                  setState(() {
+                    habitsList.add(userInput);
+                  });
+                  Navigator.of(context).pop(); // Close input dialog after adding
+                }
+              },
+              child: Text("Submit"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: habitsList.isEmpty
+          ? Center(
+              child: Text(
+                "No habits added yet.",
+                style: TextStyle(fontSize: 16, color: Colors.grey),
+              ),
+            )
+          : ListView.builder(
+              itemCount: habitsList.length,
+              itemBuilder: (context, index) {
+                return Container(
+                  height: 50,
+                  child: Center(
+                    child: Text(habitsList[index]),
+                  ),
+                );
+              },
+            ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => _showInputDialog(),
+        child: Icon(Icons.add), // Make sure there's an icon or text inside
+      ),
+    );
+  }
+}
+
