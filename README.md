@@ -1,16 +1,16 @@
 # habit_tracker_app
 
-A new Flutter project.
+Want to nurture new habits? Look no further, this is the app for you!
 
-## Getting Started
 
-This project is a starting point for a Flutter application.
 
-A few resources to get you started if this is your first Flutter project:
+## Getting started
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- For users  
+View the user guide [here](./documentation/user_guide.md).
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- For developers  
+View the developer guide [here](./documentation/dev_guide.md).
+
+- For business partners  
+View the business context [here](./documentation/business_context.md).
