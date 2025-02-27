@@ -39,7 +39,7 @@ Therefore, the MVP is **not** the production-grade application. It is a prototyp
 
 ## Persona
 
-1. Users with new routines  
+<u>1. Users with new routines</u>  
 
 Motivations:  
 - Fear of an undesirable outcome, through the lack of commitment to a routine.
@@ -51,7 +51,7 @@ Relevant themes:
 - Instructive
 - Accountable
 
-2. Users with existing routines
+<u>2. Users with existing routines</u>  
 
 Motivations:  
 - Perceived increased of productivity through the usage of the application.
