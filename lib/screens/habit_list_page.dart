@@ -17,7 +17,7 @@ class HabitList extends StatelessWidget {
       : ListView.builder(
           itemCount: habitsList.length,
           itemBuilder: (context, index) {
-            return Container(
+            return SizedBox(
               height: 50,
               child: Center(
                 child: Text(habitsList[index]),
