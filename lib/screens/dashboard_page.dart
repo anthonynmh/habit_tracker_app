@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:convert';
-import 'package:habit_tracker_app/screens/habit_list_page.dart';
+import 'package:habit_tracker_app/widgets/habit_list.dart';
 import 'package:habit_tracker_app/widgets/input_dialog.dart';
 
 class DashboardPage extends StatefulWidget {
