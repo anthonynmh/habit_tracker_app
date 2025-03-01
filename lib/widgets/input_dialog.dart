@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:habit_tracker_app/utils/habit_manager.dart';
 
-Future<String?> showHabitInputDialog(BuildContext context, List<String> habitsList) async {
+Future<String?> showHabitInputDialog(BuildContext context, HabitManager habitManager) async {
   TextEditingController textController = TextEditingController();
   String? errorMessage;
 
   return showDialog<String>(
     context: context,
     builder: (BuildContext context) {
-      return StatefulBuilder( // Allows the dialog to rebuild when errorMessage changes
+      return StatefulBuilder(
         builder: (context, setState) {
           return AlertDialog(
             title: const Text("Enter Habit"),
@@ -18,30 +19,30 @@ Future<String?> showHabitInputDialog(BuildContext context, List<String> habitsLi
                   controller: textController,
                   decoration: InputDecoration(
                     hintText: "Type a habit...",
-                    errorText: errorMessage, // Shows validation error
+                    errorText: errorMessage,
                   ),
                 ),
               ],
             ),
             actions: [
               TextButton(
-                onPressed: () => Navigator.of(context).pop(), // Close dialog
+                onPressed: () => Navigator.of(context).pop(),
                 child: const Text("Cancel"),
               ),
               TextButton(
                 onPressed: () {
-                  String userInput = textController.text.trim();
+                  String userInput = textController.text;
 
-                  if (userInput.isEmpty) {
+                  if (userInput.trim().isEmpty) {
                     setState(() => errorMessage = "Habit cannot be empty!");
                     return;
                   }
-                  if (habitsList.contains(userInput)) {
+                  if (habitManager.containsHabit(userInput)) {
                     setState(() => errorMessage = "This habit already exists!");
                     return;
                   }
 
-                  Navigator.of(context).pop(userInput); // Return valid input
+                  Navigator.of(context).pop(userInput.trim());
                 },
                 child: const Text("Submit"),
               ),

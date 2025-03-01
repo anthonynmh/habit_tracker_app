@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:habit_tracker_app/widgets/habit_list.dart';
 import 'package:habit_tracker_app/widgets/input_dialog.dart';
+import 'package:habit_tracker_app/utils/habit_manager.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
@@ -11,47 +11,29 @@ class DashboardPage extends StatefulWidget {
 }
 
 class _DashboardPageState extends State<DashboardPage> {
-  List<String> habitsList = [];
+  final HabitManager habitManager = HabitManager();
   bool isDeleteMode = false;
 
   @override
   void initState() {
     super.initState();
-    _loadHabits();
-  }
-
-  Future<void> _loadHabits() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      habitsList = prefs.getStringList('habits') ?? []; // Defaults to empty list
-    });
-  }
-
-  Future<void> _saveHabits() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    
-    if (habitsList.isEmpty) {
-      await prefs.remove('habits'); // Remove key if list is empty
-    } else {
-      await prefs.setStringList('habits', habitsList);
-    }
+    habitManager.loadHabits().then((_) => setState(() {}));
   }
 
   void _addHabit(String habit) {
     setState(() {
-      habitsList.add(habit);
+      habitManager.addHabit(habit);
     });
-    _saveHabits();
+    habitManager.saveHabits();
   }
 
   void _deleteHabit(int index) {
     setState(() {
-      habitsList.removeAt(index);
+      habitManager.deleteHabit(index);
     });
-    _saveHabits();
+    habitManager.saveHabits();
 
-    // default to non-deleteMode when no habits
-    if (habitsList.isEmpty) {
+    if (habitManager.habitsList.isEmpty) {
       _toggleDeleteMode();
     }
   }
@@ -67,7 +49,7 @@ class _DashboardPageState extends State<DashboardPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text("All Habits"),
-        actions: habitsList.isNotEmpty
+        actions: habitManager.habitsList.isNotEmpty
             ? [
                 IconButton(
                   icon: Icon(isDeleteMode ? Icons.cancel : Icons.delete),
@@ -77,13 +59,13 @@ class _DashboardPageState extends State<DashboardPage> {
             : null,
       ),
       body: HabitList(
-        habitsList: habitsList,
+        habitsList: habitManager.habitsList,
         onDelete: _deleteHabit,
         isDeleteMode: isDeleteMode,
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          String? habit = await showHabitInputDialog(context, habitsList);
+          String? habit = await showHabitInputDialog(context, habitManager);
           if (habit != null) _addHabit(habit);
         },
         child: Icon(Icons.add),
