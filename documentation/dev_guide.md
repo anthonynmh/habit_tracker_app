@@ -28,6 +28,10 @@ You may run the following command to run all tests.
 flutter test
 ```
 
+The project is developed to ensure the following:
+- screens are maintained with UI interaction tests - `testWidgets()`.
+- utils are maintained with unit tests - `test()`.
+
 
 # CI/CD
 
