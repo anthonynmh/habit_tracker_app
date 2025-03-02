@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:habit_tracker_app/screens/dashboard_page.dart';
 import 'package:habit_tracker_app/screens/calendar_page.dart';
-import 'package:habit_tracker_app/theme/app_colors.dart';
 
 class MyHomePage extends StatefulWidget {
   final String title;
@@ -27,6 +26,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
       body: Center(child: _widgetOptions.elementAt(_selectedIndex)),
       bottomNavigationBar: BottomNavigationBar(
@@ -35,7 +36,7 @@ class _MyHomePageState extends State<MyHomePage> {
           BottomNavigationBarItem(icon: Icon(Icons.calendar_month), label: 'Calendar'),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: AppColors.primary,
+        selectedItemColor: theme.colorScheme.primary,
         onTap: _onItemTapped,
       ),
     );
