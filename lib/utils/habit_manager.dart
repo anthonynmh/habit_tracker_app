@@ -7,7 +7,7 @@ class HabitManager {
 
   Future<void> loadHabits() async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.clear();// for debugging
+    // await prefs.clear();// for debugging
     final String? habitsJson = prefs.getString('habits');
     if (habitsJson != null) {
       List<dynamic> decoded = jsonDecode(habitsJson);
