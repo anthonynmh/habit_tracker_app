@@ -3,7 +3,7 @@ name: test-ios-iphone-16
 on:
   push:
     branches:
-      - dev # temp disable workflow on main
+      - main
     paths-ignore:
     - 'README.md'
     - 'documentation/*'
