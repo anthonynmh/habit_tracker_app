@@ -19,39 +19,32 @@ Future<Habit?> showHabitInputDialog(BuildContext context, {Habit? initialHabit})
         builder: (context, setState) {
           return AlertDialog(
             title: Text(initialHabit == null ? "Enter Habit" : "Edit Habit"),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  controller: nameController,
-                  decoration: InputDecoration(
-                    labelText: "Habit Name",
-                    errorText: errorMessage,
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextField(
+                    controller: nameController,
+                    decoration: InputDecoration(
+                      labelText: "Habit Name",
+                      errorText: errorMessage,
+                    ),
                   ),
-                ),
-                TextField(
-                  controller: descriptionController,
-                  decoration: const InputDecoration(labelText: "Description"),
-                ),
-                TextField(
-                  controller: reminderController,
-                  keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(labelText: "Reminder Frequency (times/day)"),
-                ),
-                SwitchListTile(
-                  title: const Text("Show in Calendar"),
-                  value: isCalendarDisplay,
-                  onChanged: (value) => setState(() => isCalendarDisplay = value),
-                ),
-                DropdownButtonFormField<String>(
-                  value: category,
-                  items: ['General', 'Health', 'Work', 'Personal'].map((cat) {
-                    return DropdownMenuItem(value: cat, child: Text(cat));
-                  }).toList(),
-                  onChanged: (value) => setState(() => category = value ?? 'General'),
-                  decoration: const InputDecoration(labelText: "Category"),
-                ),
-              ],
+                  TextField(
+                    controller: descriptionController,
+                    decoration: const InputDecoration(labelText: "Description"),
+                  ),
+                  DropdownButtonFormField<String>(
+                    value: category,
+                    items: ['General', 'Health', 'Work', 'Personal'].map((cat) {
+                      return DropdownMenuItem(value: cat, child: Text(cat));
+                    }).toList(),
+                    onChanged: (value) => setState(() => category = value ?? 'General'),
+                    decoration: const InputDecoration(labelText: "Category"),
+                  ),
+                  const SizedBox(height: 10),
+                ],
+              ),
             ),
             actions: [
               TextButton(
@@ -76,7 +69,7 @@ Future<Habit?> showHabitInputDialog(BuildContext context, {Habit? initialHabit})
                       reminderFrequency: reminder,
                       isCalendarDisplay: isCalendarDisplay,
                       category: category,
-                      isCompletedToday: initialHabit?.isCompletedToday ?? false,
+                      completedDates: initialHabit?.completedDates ?? {},
                     ),
                   );
                 },
