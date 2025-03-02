@@ -40,19 +40,27 @@ class _DashboardPageState extends State<DashboardPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
-      appBar: AppBar(title: const Text("All Habits")),
+      appBar: AppBar(
+        title: const Text("All Habits"),
+        backgroundColor: theme.colorScheme.primary,
+        foregroundColor: Colors.white,
+      ),
+      backgroundColor: theme.colorScheme.surface,
       body: HabitList(
         habitsList: habitManager.habitsList,
         onDelete: _deleteHabit,
-        onEdit: _editHabit, // Enable editing
+        onEdit: _editHabit, 
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           Habit? habit = await showHabitInputDialog(context);
           if (habit != null) _addHabit(habit);
         },
-        child: const Icon(Icons.add),
+        backgroundColor: theme.colorScheme.primary, // Matches app theme
+        child: const Icon(Icons.add, color: Colors.white),
       ),
     );
   }

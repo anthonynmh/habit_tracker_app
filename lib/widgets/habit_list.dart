@@ -5,7 +5,7 @@ import 'package:habit_tracker_app/widgets/input_dialog.dart';
 class HabitList extends StatelessWidget {
   final List<Habit> habitsList;
   final Function(int) onDelete;
-  final Function(int, Habit) onEdit; // Function to handle habit updates
+  final Function(int, Habit) onEdit;
 
   const HabitList({
     super.key,
@@ -39,14 +39,15 @@ class HabitList extends StatelessWidget {
 
   void _editHabit(BuildContext context, int index) async {
     Habit? updatedHabit = await showHabitInputDialog(context, initialHabit: habitsList[index]);
-
     if (updatedHabit != null) {
-      onEdit(index, updatedHabit); // Pass updated habit to parent
+      onEdit(index, updatedHabit);
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return habitsList.isEmpty
         ? const Center(
             child: Text(
@@ -65,40 +66,79 @@ class HabitList extends StatelessWidget {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: ListTile(
-                    title: Text(
-                      habit.name,
-                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-                    ),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Column(
                       children: [
-                        Text("Category: ${habit.category}"),
-                        Text("Reminder: ${habit.reminderFrequency} times/day"),
-                        if (habit.description.isNotEmpty) Text("Note: ${habit.description}"),
-                        Text("Calendar Display: ${habit.isCalendarDisplay ? "Yes" : "No"}"),
-                        Text("Completed Today: ${habit.isCompletedToday ? "Yes" : "No"}"),
-                      ],
-                    ),
-                    trailing: PopupMenuButton<String>(
-                      onSelected: (value) {
-                        if (value == 'edit') {
-                          _editHabit(context, index); // Call edit function
-                        } else if (value == 'delete') {
-                          _confirmDelete(context, index);
-                        }
-                      },
-                      itemBuilder: (context) => [
-                        const PopupMenuItem(
-                          value: 'edit',
-                          child: Text('Edit'),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              habit.name,
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: theme.colorScheme.primary,
+                              ),
+                            ),
+                            const Spacer(),
+                            PopupMenuButton<String>(
+                              onSelected: (value) {
+                                if (value == 'edit') {
+                                  _editHabit(context, index);
+                                } else if (value == 'delete') {
+                                  _confirmDelete(context, index);
+                                }
+                              },
+                              itemBuilder: (context) => [
+                                const PopupMenuItem(value: 'edit', child: Text('Edit')),
+                                const PopupMenuItem(
+                                  value: 'delete',
+                                  child: Text('Delete', style: TextStyle(color: Colors.red)),
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
-                        const PopupMenuItem(
-                          value: 'delete',
-                          child: Text(
-                            'Delete',
-                            style: TextStyle(color: Colors.red),
+
+                        const SizedBox(height: 8),
+
+                        SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            children: [
+                              _buildInfoChip(Icons.category, habit.category),
+                              _buildInfoChip(Icons.access_alarm, "Remind: ${habit.reminderFrequency}x/day"),
+                              _buildInfoChip(
+                                habit.isCalendarDisplay ? Icons.calendar_today : Icons.calendar_month_outlined,
+                                habit.isCalendarDisplay ? "Calendar: Yes" : "Calendar: No",
+                              ),
+                              if (habit.description.isNotEmpty)
+                                _buildInfoChip(Icons.note, habit.description),
+                            ],
                           ),
+                        ),
+
+                        const SizedBox(height: 12),
+
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              habit.isCompletedToday ? Icons.check_circle : Icons.radio_button_unchecked,
+                              color: habit.isCompletedToday ? Colors.green : Colors.red,
+                              size: 20,
+                            ),
+                            const SizedBox(width: 6),
+                            Text(
+                              habit.isCompletedToday ? "Completed Today" : "Not Completed",
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                                color: habit.isCompletedToday ? Colors.green : Colors.red,
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
@@ -107,5 +147,23 @@ class HabitList extends StatelessWidget {
               );
             },
           );
+  }
+
+  // Helper Function for Info Chips
+  Widget _buildInfoChip(IconData icon, String label) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 6),
+      child: Chip(
+        label: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 16, color: Colors.white),
+            const SizedBox(width: 4),
+            Text(label, style: const TextStyle(color: Colors.white)),
+          ],
+        ),
+        backgroundColor: Colors.grey.shade600,
+      ),
+    );
   }
 }

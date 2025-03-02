@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:habit_tracker_app/screens/dashboard_page.dart';
 import 'package:habit_tracker_app/screens/calendar_page.dart';
+import 'package:habit_tracker_app/theme/app_colors.dart';
 
 class MyHomePage extends StatefulWidget {
   final String title;
@@ -34,7 +35,7 @@ class _MyHomePageState extends State<MyHomePage> {
           BottomNavigationBarItem(icon: Icon(Icons.calendar_month), label: 'Calendar'),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Colors.amber[800],
+        selectedItemColor: AppColors.primary,
         onTap: _onItemTapped,
       ),
     );
