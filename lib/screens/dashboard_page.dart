@@ -12,7 +12,6 @@ class DashboardPage extends StatefulWidget {
 
 class _DashboardPageState extends State<DashboardPage> {
   final HabitManager habitManager = HabitManager();
-  bool isDeleteMode = false;
 
   @override
   void initState() {
@@ -32,43 +31,22 @@ class _DashboardPageState extends State<DashboardPage> {
       habitManager.deleteHabit(index);
     });
     habitManager.saveHabits();
-
-    if (habitManager.habitsList.isEmpty) {
-      _toggleDeleteMode();
-    }
-  }
-
-  void _toggleDeleteMode() {
-    setState(() {
-      isDeleteMode = !isDeleteMode;
-    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("All Habits"),
-        actions: habitManager.habitsList.isNotEmpty
-            ? [
-                IconButton(
-                  icon: Icon(isDeleteMode ? Icons.cancel : Icons.delete),
-                  onPressed: _toggleDeleteMode,
-                ),
-              ]
-            : null,
-      ),
+      appBar: AppBar(title: const Text("All Habits")),
       body: HabitList(
         habitsList: habitManager.habitsList,
         onDelete: _deleteHabit,
-        isDeleteMode: isDeleteMode,
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           String? habit = await showHabitInputDialog(context, habitManager);
           if (habit != null) _addHabit(habit);
         },
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
     );
   }

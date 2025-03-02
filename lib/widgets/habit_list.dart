@@ -3,13 +3,11 @@ import 'package:flutter/material.dart';
 class HabitList extends StatelessWidget {
   final List<String> habitsList;
   final Function(int) onDelete;
-  final bool isDeleteMode;
 
   const HabitList({
     super.key,
     required this.habitsList,
     required this.onDelete,
-    required this.isDeleteMode,
   });
 
   void _confirmDelete(BuildContext context, int index) {
@@ -59,10 +57,25 @@ class HabitList extends StatelessWidget {
                       habitsList[index],
                       style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                     ),
-                    onTap: isDeleteMode ? () => _confirmDelete(context, index) : null,
-                    tileColor: isDeleteMode ? Colors.red[100] : Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                    trailing: PopupMenuButton<String>(
+                      onSelected: (value) {
+                        if (value == 'delete') {
+                          _confirmDelete(context, index);
+                        }
+                      },
+                      itemBuilder: (context) => [
+                        const PopupMenuItem(
+                          value: 'edit',
+                          child: Text('Edit'),
+                        ),
+                        const PopupMenuItem(
+                          value: 'delete',
+                          child: Text(
+                            'Delete',
+                            style: TextStyle(color: Colors.red),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
