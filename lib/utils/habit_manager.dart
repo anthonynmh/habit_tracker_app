@@ -20,13 +20,17 @@ class HabitManager {
   }
 
   void addHabit(Habit habit) {
-    habitsList.add(habit);
-    saveHabits();
+    if (!dupeNameExists(habit)) {
+      habitsList.add(habit);
+      saveHabits();
+    }
   }
 
   void deleteHabit(int index) {
-    habitsList.removeAt(index);
-    saveHabits();
+    if (0 <= index && index < habitsList.length) {
+      habitsList.removeAt(index);
+      saveHabits();
+    }
   }
 
   void updateHabit(String habitName, Habit updatedHabit) {
