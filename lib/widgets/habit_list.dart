@@ -5,7 +5,7 @@ import 'package:habit_tracker_app/widgets/input_dialog.dart';
 class HabitList extends StatelessWidget {
   final List<Habit> habitsList;
   final Function(int) onDelete;
-  final Function(int, Habit) onEdit;
+  final Function(String, Habit) onEdit;
 
   const HabitList({
     super.key,
@@ -37,10 +37,11 @@ class HabitList extends StatelessWidget {
     );
   }
 
-  void _editHabit(BuildContext context, int index) async {
+  void _editHabit(BuildContext context, String habitName) async {
+    int index = habitsList.indexWhere((habit) => habit.name == habitName);
     Habit? updatedHabit = await showHabitInputDialog(context, initialHabit: habitsList[index]);
     if (updatedHabit != null) {
-      onEdit(index, updatedHabit);
+      onEdit(habitName, updatedHabit);
     }
   }
 
@@ -59,111 +60,142 @@ class HabitList extends StatelessWidget {
             itemCount: habitsList.length,
             itemBuilder: (context, index) {
               final habit = habitsList[index];
+
               return Padding(
                 padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 12.0),
                 child: Card(
                   elevation: 3,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Row 1 - Category with filled secondary color
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: theme.colorScheme.secondary,
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(12),
+                            topRight: Radius.circular(12),
+                          ),
+                        ),
+                        child: Text(
+                          habit.category,
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: theme.colorScheme.onSecondary,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+
+                      Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              habit.name,
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: theme.colorScheme.primary,
+                            // Row 2 - Name, Spacer, Calendar, Popup Menu
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    habit.name,
+                                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                                Icon(
+                                  habit.isCalendarDisplay ? Icons.calendar_today : Icons.calendar_month_outlined,
+                                  color: theme.colorScheme.secondary,
+                                ),
+                                PopupMenuButton<String>(
+                                  onSelected: (value) {
+                                    if (value == 'edit') {
+                                      _editHabit(context, habit.name);
+                                    } else if (value == 'delete') {
+                                      _confirmDelete(context, index);
+                                    }
+                                  },
+                                  itemBuilder: (context) => [
+                                    const PopupMenuItem(value: 'edit', child: Text('Edit')),
+                                    const PopupMenuItem(value: 'delete', child: Text('Delete', style: TextStyle(color: Colors.red))),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            
+                            const SizedBox(height: 8),
+
+                            // Row 3 - Description with fixed height and outline
+                            Container(
+                              height: 50,
+                              width: double.infinity,
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                border: Border.all(color: Colors.grey.shade400),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Text(
+                                habit.description.isNotEmpty ? habit.description : "No description provided",
+                                style: TextStyle(fontSize: 14, color: Colors.grey.shade700),
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 2,
                               ),
                             ),
-                            const Spacer(),
-                            PopupMenuButton<String>(
-                              onSelected: (value) {
-                                if (value == 'edit') {
-                                  _editHabit(context, index);
-                                } else if (value == 'delete') {
-                                  _confirmDelete(context, index);
-                                }
-                              },
-                              itemBuilder: (context) => [
-                                const PopupMenuItem(value: 'edit', child: Text('Edit')),
-                                const PopupMenuItem(
-                                  value: 'delete',
-                                  child: Text('Delete', style: TextStyle(color: Colors.red)),
+
+                            const SizedBox(height: 8),
+
+                            // Row 4 - Frequency, Spacer, Completion Status
+                            Row(
+                              children: [
+                                Text(
+                                  "Remind: ${habit.reminderFrequency}x/day",
+                                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                                ),
+                                const Spacer(),
+                                GestureDetector(
+                                  onTap: () {
+                                    Habit updatedHabit = Habit(
+                                      name: habit.name,
+                                      category: habit.category,
+                                      reminderFrequency: habit.reminderFrequency,
+                                      isCalendarDisplay: habit.isCalendarDisplay,
+                                      description: habit.description,
+                                      isCompletedToday: !habit.isCompletedToday,
+                                    );
+                                    onEdit(habit.name, updatedHabit);
+                                  },
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        habit.isCompletedToday ? Icons.check_circle : Icons.radio_button_unchecked,
+                                        color: habit.isCompletedToday ? Colors.green : Colors.red,
+                                        size: 20,
+                                      ),
+                                      const SizedBox(width: 6),
+                                      Text(
+                                        habit.isCompletedToday ? "Completed Today" : "Not Completed",
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500,
+                                          color: habit.isCompletedToday ? Colors.green : Colors.red,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ],
                             ),
                           ],
                         ),
-
-                        const SizedBox(height: 8),
-
-                        SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            children: [
-                              _buildInfoChip(Icons.category, habit.category),
-                              _buildInfoChip(Icons.access_alarm, "Remind: ${habit.reminderFrequency}x/day"),
-                              _buildInfoChip(
-                                habit.isCalendarDisplay ? Icons.calendar_today : Icons.calendar_month_outlined,
-                                habit.isCalendarDisplay ? "Calendar: Yes" : "Calendar: No",
-                              ),
-                              if (habit.description.isNotEmpty)
-                                _buildInfoChip(Icons.note, habit.description),
-                            ],
-                          ),
-                        ),
-
-                        const SizedBox(height: 12),
-
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              habit.isCompletedToday ? Icons.check_circle : Icons.radio_button_unchecked,
-                              color: habit.isCompletedToday ? Colors.green : Colors.red,
-                              size: 20,
-                            ),
-                            const SizedBox(width: 6),
-                            Text(
-                              habit.isCompletedToday ? "Completed Today" : "Not Completed",
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                                color: habit.isCompletedToday ? Colors.green : Colors.red,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               );
             },
           );
-  }
-
-  // Helper Function for Info Chips
-  Widget _buildInfoChip(IconData icon, String label) {
-    return Padding(
-      padding: const EdgeInsets.only(right: 6),
-      child: Chip(
-        label: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon, size: 16, color: Colors.white),
-            const SizedBox(width: 4),
-            Text(label, style: const TextStyle(color: Colors.white)),
-          ],
-        ),
-        backgroundColor: Colors.grey.shade600,
-      ),
-    );
   }
 }

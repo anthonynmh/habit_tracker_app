@@ -25,8 +25,9 @@ class HabitManager {
     saveHabits();
   }
 
-  void updateHabit(int index, Habit updatedHabit) {
-    if (index >= 0 && index < habitsList.length) {
+  void updateHabit(String habitName, Habit updatedHabit) {
+    int index = habitsList.indexWhere((habit) => habit.name == habitName);
+    if (index != -1) {
       habitsList[index] = updatedHabit;
       saveHabits();
     }

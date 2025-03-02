@@ -13,6 +13,7 @@ class DashboardPage extends StatefulWidget {
 
 class _DashboardPageState extends State<DashboardPage> {
   final HabitManager habitManager = HabitManager();
+  bool _showCompleted = false;
 
   @override
   void initState() {
@@ -32,9 +33,9 @@ class _DashboardPageState extends State<DashboardPage> {
     });
   }
 
-  void _editHabit(int index, Habit updatedHabit) {
+  void _editHabit(String habitName, Habit updatedHabit) {
     setState(() {
-      habitManager.updateHabit(index, updatedHabit);
+      habitManager.updateHabit(habitName, updatedHabit);
     });
   }
 
@@ -42,25 +43,62 @@ class _DashboardPageState extends State<DashboardPage> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
+    // Separate completed and incomplete habits
+    List<Habit> incompleteHabits = habitManager.habitsList.where((h) => !h.isCompletedToday).toList();
+    List<Habit> completedHabits = habitManager.habitsList.where((h) => h.isCompletedToday).toList();
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text("All Habits"),
+        title: const Text("Habit Tracker"),
         backgroundColor: theme.colorScheme.primary,
         foregroundColor: Colors.white,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.add),
+            onPressed: () async {
+              Habit? habit = await showHabitInputDialog(context);
+              if (habit != null) _addHabit(habit);
+            },
+          ),
+        ],
       ),
       backgroundColor: theme.colorScheme.surface,
-      body: HabitList(
-        habitsList: habitManager.habitsList,
-        onDelete: _deleteHabit,
-        onEdit: _editHabit, 
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          Habit? habit = await showHabitInputDialog(context);
-          if (habit != null) _addHabit(habit);
-        },
-        backgroundColor: theme.colorScheme.primary, // Matches app theme
-        child: const Icon(Icons.add, color: Colors.white),
+      body: Column(
+        children: [
+          // Incomplete Habits Section
+          ListTile(
+            title: Text("Incomplete Habits (${incompleteHabits.length})", style: const TextStyle(fontWeight: FontWeight.bold)),
+          ),
+          Expanded(
+            child: HabitList(
+              habitsList: incompleteHabits,
+              onDelete: _deleteHabit,
+              onEdit: _editHabit,
+            ),
+          ),
+
+          // Completed Habits Section
+          ListTile(
+            title: Text("Completed Habits (${completedHabits.length})", style: const TextStyle(fontWeight: FontWeight.bold)),
+            trailing: IconButton(
+              icon: Icon(_showCompleted ? Icons.expand_more : Icons.expand_less),
+              onPressed: () {
+                setState(() {
+                  _showCompleted = !_showCompleted;
+                });
+              },
+            ),
+          ),
+          if (_showCompleted)
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.35, // 50% of screen height
+              child: HabitList(
+                habitsList: completedHabits,
+                onDelete: _deleteHabit,
+                onEdit: _editHabit,
+              ),
+            ),
+        ],
       ),
     );
   }
