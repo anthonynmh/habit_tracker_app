@@ -40,12 +40,6 @@ class _DashboardPageState extends State<DashboardPage> {
     });
   }
 
-  void _toggleHabitCompletion(String habitName, DateTime date) {
-    setState(() {
-      habitManager.toggleHabitCompletion(habitName, date);
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -116,7 +110,6 @@ class _DashboardPageState extends State<DashboardPage> {
           Expanded(
             child: HabitList(
               habitsList: incompleteHabits,
-              onToggleCompletion: _toggleHabitCompletion,
               onDelete: _deleteHabit,
               onEdit: _editHabit,
               selectedDate: _selectedDate,
@@ -141,7 +134,6 @@ class _DashboardPageState extends State<DashboardPage> {
               height: MediaQuery.of(context).size.height * 0.35, // 35% of screen height
               child: HabitList(
                 habitsList: completedHabits,
-                onToggleCompletion: _toggleHabitCompletion,
                 onDelete: _deleteHabit,
                 onEdit: _editHabit,
                 selectedDate: _selectedDate,

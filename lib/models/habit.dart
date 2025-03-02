@@ -2,17 +2,13 @@ import 'dart:convert';
 
 class Habit {
   String name;
-  int reminderFrequency;
   String description;
-  bool isCalendarDisplay;
   String category;
   Set<String> completedDates; // Store completed dates as Strings (yyyy-MM-dd)
 
   Habit({
     required this.name,
-    this.reminderFrequency = 1,
     this.description = '',
-    this.isCalendarDisplay = false,
     this.category = 'Uncategorized',
     Set<String>? completedDates,
   }) : completedDates = completedDates ?? {};
@@ -34,9 +30,7 @@ class Habit {
   Map<String, dynamic> toJson() {
     return {
       'name': name,
-      'reminderFrequency': reminderFrequency,
       'description': description,
-      'isCalendarDisplay': isCalendarDisplay,
       'category': category,
       'completedDates': completedDates.toList(),
     };
@@ -45,9 +39,7 @@ class Habit {
   factory Habit.fromJson(Map<String, dynamic> json) {
     return Habit(
       name: json['name'],
-      reminderFrequency: json['reminderFrequency'] ?? 1,
       description: json['description'] ?? '',
-      isCalendarDisplay: json['isCalendarDisplay'] ?? false,
       category: json['category'] ?? 'Uncategorized',
       completedDates: (json['completedDates'] as List<dynamic>?)
               ?.map((e) => e.toString())
