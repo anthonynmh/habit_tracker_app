@@ -4,6 +4,7 @@ import 'package:habit_tracker_app/screens/dashboard_page.dart';
 import 'package:habit_tracker_app/utils/habit_manager.dart';
 import 'package:habit_tracker_app/models/habit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:intl/intl.dart';
 
 void main() {
   setUp(() {
@@ -19,7 +20,7 @@ void main() {
 
   testWidgets('Adding a habit updates the UI', (WidgetTester tester) async {
     final habitManager = HabitManager();
-    habitManager.addHabit(Habit(name: "Exercise"));
+    habitManager.addHabit(Habit(name: "Exercise", completedDates: <String>{}));
 
     await tester.pumpWidget(const MaterialApp(home: DashboardPage()));
     await tester.pump();
@@ -29,7 +30,9 @@ void main() {
 
   testWidgets('Completed habits toggle visibility', (WidgetTester tester) async {
     final habitManager = HabitManager();
-    habitManager.addHabit(Habit(name: "Exercise", isCompletedToday: true));
+    String today = DateFormat('yyyy-MM-dd').format(DateTime.now());
+
+    habitManager.addHabit(Habit(name: "Exercise", completedDates: <String>{today}));
 
     await tester.pumpWidget(const MaterialApp(home: DashboardPage()));
     await tester.pump();

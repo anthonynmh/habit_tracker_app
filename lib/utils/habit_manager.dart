@@ -7,16 +7,11 @@ class HabitManager {
 
   Future<void> loadHabits() async {
     final prefs = await SharedPreferences.getInstance();
-    // await prefs.clear();// for debugging
     final String? habitsJson = prefs.getString('habits');
     if (habitsJson != null) {
       List<dynamic> decoded = jsonDecode(habitsJson);
       habitsList = decoded.map((habit) => Habit.fromJson(habit)).toList();
     }
-  }
-
-  bool dupeNameExists(Habit habit) {
-    return habitsList.any((h) => h.name == habit.name);
   }
 
   void addHabit(Habit habit) {
@@ -27,7 +22,7 @@ class HabitManager {
   }
 
   void deleteHabit(int index) {
-    if (0 <= index && index < habitsList.length) {
+    if (index >= 0 && index < habitsList.length) {
       habitsList.removeAt(index);
       saveHabits();
     }
@@ -41,9 +36,26 @@ class HabitManager {
     }
   }
 
+  void toggleHabitCompletion(String habitName, DateTime date) {
+    int index = habitsList.indexWhere((habit) => habit.name == habitName);
+    if (index != -1) {
+      habitsList[index].toggleCompletion(date);
+      saveHabits();
+    }
+  }
+
+  List<Habit> getCompletedHabitsOn(DateTime date) {
+    return habitsList.where((h) => h.isCompletedOn(date)).toList();
+  }
+
   Future<void> saveHabits() async {
     final prefs = await SharedPreferences.getInstance();
-    final String encodedHabits = jsonEncode(habitsList.map((h) => h.toJson()).toList());
+    final String encodedHabits =
+        jsonEncode(habitsList.map((h) => h.toJson()).toList());
     prefs.setString('habits', encodedHabits);
+  }
+
+  bool dupeNameExists(Habit habit) {
+    return habitsList.any((h) => h.name == habit.name);
   }
 }
