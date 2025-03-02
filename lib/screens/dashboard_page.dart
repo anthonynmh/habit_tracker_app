@@ -57,7 +57,7 @@ class _DashboardPageState extends State<DashboardPage> {
             icon: const Icon(Icons.add),
             onPressed: () async {
               Habit? habit = await showHabitInputDialog(context);
-              if (habit != null) _addHabit(habit);
+              if (habit != null && !habitManager.dupeNameExists(habit)) _addHabit(habit);
             },
           ),
         ],

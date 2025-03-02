@@ -15,6 +15,10 @@ class HabitManager {
     }
   }
 
+  bool dupeNameExists(Habit habit) {
+    return habitsList.any((h) => h.name == habit.name);
+  }
+
   void addHabit(Habit habit) {
     habitsList.add(habit);
     saveHabits();
