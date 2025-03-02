@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:habit_tracker_app/widgets/habit_list.dart';
 import 'package:habit_tracker_app/widgets/input_dialog.dart';
 import 'package:habit_tracker_app/utils/habit_manager.dart';
+import 'package:habit_tracker_app/models/habit.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
@@ -19,18 +20,22 @@ class _DashboardPageState extends State<DashboardPage> {
     habitManager.loadHabits().then((_) => setState(() {}));
   }
 
-  void _addHabit(String habit) {
+  void _addHabit(Habit habit) {
     setState(() {
       habitManager.addHabit(habit);
     });
-    habitManager.saveHabits();
   }
 
   void _deleteHabit(int index) {
     setState(() {
       habitManager.deleteHabit(index);
     });
-    habitManager.saveHabits();
+  }
+
+  void _editHabit(int index, Habit updatedHabit) {
+    setState(() {
+      habitManager.updateHabit(index, updatedHabit);
+    });
   }
 
   @override
@@ -40,10 +45,11 @@ class _DashboardPageState extends State<DashboardPage> {
       body: HabitList(
         habitsList: habitManager.habitsList,
         onDelete: _deleteHabit,
+        onEdit: _editHabit, // Enable editing
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          String? habit = await showHabitInputDialog(context, habitManager);
+          Habit? habit = await showHabitInputDialog(context);
           if (habit != null) _addHabit(habit);
         },
         child: const Icon(Icons.add),

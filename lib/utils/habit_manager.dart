@@ -1,38 +1,40 @@
+import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:habit_tracker_app/models/habit.dart';
 
 class HabitManager {
-  List<String> _habitsList = []; // Private list
-
-  List<String> get habitsList => List.unmodifiable(_habitsList); // Expose as read-only
+  List<Habit> habitsList = [];
 
   Future<void> loadHabits() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    _habitsList = prefs.getStringList('habits') ?? [];
-  }
-
-  Future<void> saveHabits() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    if (habitsList.isEmpty) {
-      await prefs.remove('habits');
-    } else {
-      await prefs.setStringList('habits', habitsList);
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.clear();// for debugging
+    final String? habitsJson = prefs.getString('habits');
+    if (habitsJson != null) {
+      List<dynamic> decoded = jsonDecode(habitsJson);
+      habitsList = decoded.map((habit) => Habit.fromJson(habit)).toList();
     }
   }
 
-  void addHabit(String habit) {
-    final trimmedHabit = habit.trim();
-    if (trimmedHabit.isNotEmpty && !containsHabit(trimmedHabit)) {
-      _habitsList.add(trimmedHabit);
-    }
+  void addHabit(Habit habit) {
+    habitsList.add(habit);
+    saveHabits();
   }
 
   void deleteHabit(int index) {
+    habitsList.removeAt(index);
+    saveHabits();
+  }
+
+  void updateHabit(int index, Habit updatedHabit) {
     if (index >= 0 && index < habitsList.length) {
-      _habitsList.removeAt(index);
+      habitsList[index] = updatedHabit;
+      saveHabits();
     }
   }
 
-  bool containsHabit(String habit) {
-    return _habitsList.contains(habit.trim());
+  Future<void> saveHabits() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String encodedHabits = jsonEncode(habitsList.map((h) => h.toJson()).toList());
+    prefs.setString('habits', encodedHabits);
   }
 }

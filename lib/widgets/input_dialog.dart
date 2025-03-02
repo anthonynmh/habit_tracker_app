@@ -1,26 +1,55 @@
 import 'package:flutter/material.dart';
-import 'package:habit_tracker_app/utils/habit_manager.dart';
+import 'package:habit_tracker_app/models/habit.dart';
 
-Future<String?> showHabitInputDialog(BuildContext context, HabitManager habitManager) async {
-  TextEditingController textController = TextEditingController();
+Future<Habit?> showHabitInputDialog(BuildContext context, {Habit? initialHabit}) async {
+  TextEditingController nameController = TextEditingController(text: initialHabit?.name ?? '');
+  TextEditingController descriptionController = TextEditingController(text: initialHabit?.description ?? '');
+  TextEditingController reminderController = TextEditingController(
+    text: initialHabit?.reminderFrequency.toString() ?? '1',
+  );
+  bool isCalendarDisplay = initialHabit?.isCalendarDisplay ?? false;
+  String category = initialHabit?.category ?? 'General';
+
   String? errorMessage;
 
-  return showDialog<String>(
+  return showDialog<Habit>(
     context: context,
     builder: (BuildContext context) {
       return StatefulBuilder(
         builder: (context, setState) {
           return AlertDialog(
-            title: const Text("Enter Habit"),
+            title: Text(initialHabit == null ? "Enter Habit" : "Edit Habit"),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 TextField(
-                  controller: textController,
+                  controller: nameController,
                   decoration: InputDecoration(
-                    hintText: "Type a habit...",
+                    labelText: "Habit Name",
                     errorText: errorMessage,
                   ),
+                ),
+                TextField(
+                  controller: descriptionController,
+                  decoration: const InputDecoration(labelText: "Description"),
+                ),
+                TextField(
+                  controller: reminderController,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(labelText: "Reminder Frequency (times/day)"),
+                ),
+                SwitchListTile(
+                  title: const Text("Show in Calendar"),
+                  value: isCalendarDisplay,
+                  onChanged: (value) => setState(() => isCalendarDisplay = value),
+                ),
+                DropdownButtonFormField<String>(
+                  value: category,
+                  items: ['General', 'Health', 'Work', 'Personal'].map((cat) {
+                    return DropdownMenuItem(value: cat, child: Text(cat));
+                  }).toList(),
+                  onChanged: (value) => setState(() => category = value ?? 'General'),
+                  decoration: const InputDecoration(labelText: "Category"),
                 ),
               ],
             ),
@@ -31,18 +60,25 @@ Future<String?> showHabitInputDialog(BuildContext context, HabitManager habitMan
               ),
               TextButton(
                 onPressed: () {
-                  String userInput = textController.text;
+                  String name = nameController.text.trim();
+                  String description = descriptionController.text.trim();
+                  int reminder = int.tryParse(reminderController.text) ?? 1;
 
-                  if (userInput.trim().isEmpty) {
-                    setState(() => errorMessage = "Habit cannot be empty!");
-                    return;
-                  }
-                  if (habitManager.containsHabit(userInput)) {
-                    setState(() => errorMessage = "This habit already exists!");
+                  if (name.isEmpty) {
+                    setState(() => errorMessage = "Habit name cannot be empty!");
                     return;
                   }
 
-                  Navigator.of(context).pop(userInput.trim());
+                  Navigator.of(context).pop(
+                    Habit(
+                      name: name,
+                      description: description,
+                      reminderFrequency: reminder,
+                      isCalendarDisplay: isCalendarDisplay,
+                      category: category,
+                      isCompletedToday: initialHabit?.isCompletedToday ?? false,
+                    ),
+                  );
                 },
                 child: const Text("Submit"),
               ),
