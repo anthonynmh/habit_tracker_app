@@ -35,7 +35,9 @@ The following steps assumes basic knowledge in Git and scripting. If you are new
 ### First page 
 When users first launch the application, they are immediately presented with the dashboard.
 
-![dashboard_page](./screenshots/first_page.png)
+<!-- ![dashboard_page](./screenshots/first_page.png) -->
+
+<img src="./screenshots/first_page.png" alt="dashboard_page" width="150">
 
 
 ### Adding a habit to track
