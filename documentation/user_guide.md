@@ -1,4 +1,4 @@
-# Usage Instructions
+# Introduction
 
 Eventually, users will be able to access the deployed application through either the Google Play Store or the Apple App Store.
 
@@ -35,65 +35,88 @@ The following steps assumes basic knowledge in Git and scripting. If you are new
 ### First page 
 When users first launch the application, they are immediately presented with the dashboard.
 
-<!-- ![dashboard_page](./screenshots/first_page.png) -->
-
-<img src="./screenshots/first_page.png" alt="dashboard_page" width="150">
-
+<p align="center">
+  <img src="./screenshots/first_page.png" alt="dashboard_page" width="200">
+</p>
 
 ### Adding a habit to track
 
-To add a habit to track, click on the add (**+**)  button in the top right.
+To add a habit to track, click on the add (**+**) button in the top right.
 
-![adding_habit](./screenshots/adding_habit.png)
+<p align="center">
+  <img src="./screenshots/first_page.png" alt="dashboard_page" width="200">
+</p>
 
 Update the habit information in the text fields. Note that **Habit Name** is a compulsory field, the description is optional. Tap 'Submit' to confirm the add.
 
-![habit_fields](./screenshots/habit_fields.png)
-
+<p align="center">
+  <img src="./screenshots/habit_fields.png" alt="habit_fields" width="200">
+</p>
 
 ### Editing a habit
 
 Added habits can be edited via the menu button. Tap on the triple-dot menu (**...**) and select edit.
 
-![added_habit](./screenshots/added_habit.png)
+<p align="center">
+  <img src="./screenshots/added_habit.png" alt="added_habit" width="200">
+</p>
 
-![popupmenu](./screenshots/popupmenu.png)
+<p align="center">
+  <img src="./screenshots/popupmenu.png" alt="popupmenu" width="200">
+</p>
 
 Tap 'Submit' to confirm the edit.
 
-![edit_page](./screenshots/edit_page.png)
+<p align="center">
+  <img src="./screenshots/edit_page.png" alt="edit_page" width="200">
+</p>
 
 The habit now displays with the updated information.
 
-![updated_habit](./screenshots/updated_habit.png)
+<p align="center">
+  <img src="./screenshots/updated_habit.png" alt="updated_habit" width="200">
+</p>
 
 ### Daily habit check-in
 
 Users may tap on the 'Not Completed' text to mark it as completed for the current date.
 
-![marking_complete](./screenshots/marking_complete.png)
+<p align="center">
+  <img src="./screenshots/marking_complete.png" alt="marking_complete" width="200">
+</p>
 
 If the 'Completed Habits' section is collapsed, users may expand it using the arrow on the right of the section header.
 
-![open_collapsible](./screenshots/open_collapsible.png)
+<p align="center">
+  <img src="./screenshots/open_collapsible.png" alt="open_collapsible" width="200">
+</p>
 
 The completed habit check-in for the day should be viewable.
 
-![opened_collapsible](./screenshots/opened_collapsible.png)
+<p align="center">
+  <img src="./screenshots/opened_collapsible.png" alt="opened_collapsible" width="200">
+</p>
 
 Completed habits are consolidated and viewable in the **Calendar** tab.
 
-![calendar_view](./screenshots/calendar_view.png)
-
+<p align="center">
+  <img src="./screenshots/calendar_view.png" alt="calendar_view" width="200">
+</p>
 
 ### Deleting a habit
 
 Added habits can be edited via the menu button. Tap on the triple-dot menu (**...**) and select 'Delete'. 
 
-![added_habit](./screenshots/added_habit.png)
+<p align="center">
+  <img src="./screenshots/added_habit.png" alt="added_habit" width="200">
+</p>
 
-![popupmenu_delete](./screenshots/popupmenu_delete.png)
+<p align="center">
+  <img src="./screenshots/popupmenu_delete.png" alt="popupmenu_delete" width="200">
+</p>
 
 Tap 'Delete' to confirm the delete.
 
-![confirm_delete](./screenshots/confirm_delete.png)
+<p align="center">
+  <img src="./screenshots/confirm_delete.png" alt="confirm_delete" width="200">
+</p>
