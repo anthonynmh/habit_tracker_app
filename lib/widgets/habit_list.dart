@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:habit_tracker_app/models/habit.dart';
 import 'package:habit_tracker_app/widgets/input_dialog.dart';
+import 'package:intl/intl.dart';
 
 class HabitList extends StatelessWidget {
   final List<Habit> habitsList;
   final Function(int) onDelete;
   final Function(String, Habit) onEdit;
+  final DateTime selectedDate;
 
   const HabitList({
     super.key,
     required this.habitsList,
     required this.onDelete,
     required this.onEdit,
+    required this.selectedDate,
   });
 
   void _confirmDelete(BuildContext context, int index) {
@@ -45,9 +48,30 @@ class HabitList extends StatelessWidget {
     }
   }
 
+  void _toggleCompletion(Habit habit) {
+    String formattedDate = DateFormat('yyyy-MM-dd').format(selectedDate);
+    Set<String> updatedCompletionDates = habit.completedDates;
+
+    if (updatedCompletionDates.contains(formattedDate)) {
+      updatedCompletionDates.remove(formattedDate); // Unmark as completed
+    } else {
+      updatedCompletionDates.add(formattedDate); // Mark as completed
+    }
+
+    Habit updatedHabit = Habit(
+      name: habit.name,
+      category: habit.category,
+      description: habit.description,
+      completedDates: updatedCompletionDates,
+    );
+
+    onEdit(habit.name, updatedHabit);
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    String formattedDate = DateFormat('yyyy-MM-dd').format(selectedDate);
 
     return habitsList.isEmpty
         ? const Center(
@@ -60,6 +84,7 @@ class HabitList extends StatelessWidget {
             itemCount: habitsList.length,
             itemBuilder: (context, index) {
               final habit = habitsList[index];
+              bool isCompleted = habit.completedDates.contains(formattedDate);
 
               return Padding(
                 padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 12.0),
@@ -106,10 +131,6 @@ class HabitList extends StatelessWidget {
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
-                                Icon(
-                                  habit.isCalendarDisplay ? Icons.calendar_today : Icons.calendar_month_outlined,
-                                  color: theme.colorScheme.secondary,
-                                ),
                                 PopupMenuButton<String>(
                                   onSelected: (value) {
                                     if (value == 'edit') {
@@ -125,7 +146,7 @@ class HabitList extends StatelessWidget {
                                 ),
                               ],
                             ),
-                            
+
                             const SizedBox(height: 8),
 
                             // Row 3 - Description with fixed height and outline
@@ -150,37 +171,23 @@ class HabitList extends StatelessWidget {
                             // Row 4 - Frequency, Spacer, Completion Status
                             Row(
                               children: [
-                                Text(
-                                  "Remind: ${habit.reminderFrequency}x/day",
-                                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-                                ),
                                 const Spacer(),
                                 GestureDetector(
-                                  onTap: () {
-                                    Habit updatedHabit = Habit(
-                                      name: habit.name,
-                                      category: habit.category,
-                                      reminderFrequency: habit.reminderFrequency,
-                                      isCalendarDisplay: habit.isCalendarDisplay,
-                                      description: habit.description,
-                                      isCompletedToday: !habit.isCompletedToday,
-                                    );
-                                    onEdit(habit.name, updatedHabit);
-                                  },
+                                  onTap: () => _toggleCompletion(habit),
                                   child: Row(
                                     children: [
                                       Icon(
-                                        habit.isCompletedToday ? Icons.check_circle : Icons.radio_button_unchecked,
-                                        color: habit.isCompletedToday ? Colors.green : Colors.red,
+                                        isCompleted ? Icons.check_circle : Icons.radio_button_unchecked,
+                                        color: isCompleted ? Colors.green : Colors.red,
                                         size: 20,
                                       ),
                                       const SizedBox(width: 6),
                                       Text(
-                                        habit.isCompletedToday ? "Completed Today" : "Not Completed",
+                                        isCompleted ? "Completed" : "Not Completed",
                                         style: TextStyle(
                                           fontSize: 14,
                                           fontWeight: FontWeight.w500,
-                                          color: habit.isCompletedToday ? Colors.green : Colors.red,
+                                          color: isCompleted ? Colors.green : Colors.red,
                                         ),
                                       ),
                                     ],
