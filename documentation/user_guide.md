@@ -44,7 +44,7 @@ When users first launch the application, they are immediately presented with the
 To add a habit to track, click on the add (**+**) button in the top right.
 
 <p align="center">
-  <img src="./screenshots/first_page.png" alt="dashboard_page" width="350">
+  <img src="./screenshots/adding_habit.png" alt="dashboard_page" width="350">
 </p>
 
 Update the habit information in the text fields. Note that **Habit Name** is a compulsory field, the description is optional. Tap 'Submit' to confirm the add.
@@ -65,7 +65,7 @@ Added habits can be edited via the menu button. Tap on the triple-dot menu (**..
   <img src="./screenshots/popupmenu.png" alt="popupmenu" width="350">
 </p>
 
-Tap 'Submit' to confirm the edit.
+The fields may then be updated. Tap 'Submit' to confirm the edit.
 
 <p align="center">
   <img src="./screenshots/edit_page.png" alt="edit_page" width="350">
